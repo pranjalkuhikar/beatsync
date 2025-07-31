@@ -1,7 +1,12 @@
-import React from "react";
+import FaceDetect from "../components/FaceDetect";
 
 const HomePage = () => {
-  return <div>HomePage</div>;
+  return (
+    <>
+      <FaceDetect />
+      Hello
+    </>
+  );
 };
 
 export default HomePage;
