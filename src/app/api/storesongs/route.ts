@@ -24,12 +24,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    console.log("Received body:", body);
 
     const { title, mood, url } = body;
 
     if (!title || !mood || !url) {
-      console.log("Missing required fields:", { title, mood, url });
+  
       return NextResponse.json(
         { error: "Missing required fields: title, mood, url" },
         { status: 400 }
@@ -46,8 +45,6 @@ export async function POST(request: NextRequest) {
         },
       ])
       .select();
-
-    console.log("Supabase insert result:", { data, error });
 
     if (error) {
       console.error("Supabase error:", error);

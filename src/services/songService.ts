@@ -6,6 +6,7 @@ export interface Song {
   mood: string;
   url: string;
   created_at?: string;
+  albumArt?: string; // URL to album artwork image
 }
 
 export interface SongResponse {

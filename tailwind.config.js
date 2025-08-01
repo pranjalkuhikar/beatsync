@@ -43,6 +43,7 @@ module.exports = {
         "fade-in-up": "fade-in-up 0.8s ease-out",
         "rotate-3d": "rotate-3d 20s linear infinite",
         shimmer: "shimmer 2s linear infinite",
+        "spin-slow": "spin 8s linear infinite",
       },
       keyframes: {
         float: {
