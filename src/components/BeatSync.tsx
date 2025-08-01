@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import FaceDetection from "./FaceDetection";
+import dynamic from 'next/dynamic';
+
+const FaceDetection = dynamic(() => import('./FaceDetection'), { ssr: false });
 import MoodIndicator from "./MoodIndicator";
 import SongCard from "./SongCard";
 import { songService, Song } from "@/services/songService";

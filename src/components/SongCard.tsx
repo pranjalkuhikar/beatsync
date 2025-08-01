@@ -118,61 +118,67 @@ const SongCard: React.FC<SongCardProps> = ({ song, onPlay }) => {
         <div className="album-cover w-full h-64 flex items-center justify-center relative overflow-hidden neumorphic">
           {/* Background gradient based on mood */}
           <div
-            className={`absolute inset-0 ${song.mood ? `mood-${song.mood}` : 'bg-gradient-to-br from-primary to-primary-dark'} opacity-30`}
+            className={`absolute inset-0 ${
+              song.mood
+                ? `mood-${song.mood}`
+                : "bg-gradient-to-br from-primary to-primary-dark"
+            } opacity-30`}
           ></div>
-          
+
           {/* CD-Style Album Art */}
           <div className="relative z-10 flex items-center justify-center w-full h-full">
             {/* Vinyl Record Disc */}
-            <div className={`vinyl-disc relative w-56 h-56 rounded-full bg-gradient-to-br from-gray-900 to-black shadow-xl flex items-center justify-center transition-all duration-500 ${isPlaying ? 'animate-spin-slow shadow-lg shadow-primary/30' : ''}`}>
+            <div
+              className={`vinyl-disc relative w-56 h-56 rounded-full bg-gradient-to-br from-gray-900 to-black shadow-xl flex items-center justify-center transition-all duration-500 ${
+                isPlaying ? "animate-spin-slow shadow-lg shadow-primary/30" : ""
+              }`}
+            >
               {/* Vinyl Grooves */}
               <div className="absolute inset-0 rounded-full overflow-hidden">
                 {/* Radial grooves */}
                 {[...Array(8)].map((_, i) => (
-                  <div 
-                    key={i} 
+                  <div
+                    key={i}
                     className="absolute rounded-full border border-gray-700 opacity-30"
                     style={{
                       width: `${100 - i * 10}%`,
                       height: `${100 - i * 10}%`,
                       top: `${i * 5}%`,
-                      left: `${i * 5}%`
+                      left: `${i * 5}%`,
                     }}
                   ></div>
                 ))}
-                
+
                 {/* Subtle texture overlay */}
-                <div className="absolute inset-0 rounded-full opacity-10" 
+                <div
+                  className="absolute inset-0 rounded-full opacity-10"
                   style={{
                     backgroundImage: `radial-gradient(circle, transparent 30%, rgba(0, 0, 0, 0.5) 31%, transparent 32%, transparent 70%, rgba(0, 0, 0, 0.5) 71%, transparent 72%), radial-gradient(circle, transparent 30%, rgba(0, 0, 0, 0.5) 31%, transparent 32%, transparent 70%, rgba(0, 0, 0, 0.5) 71%, transparent 72%)`,
-                    backgroundSize: '8px 8px',
-                    backgroundPosition: '0 0, 4px 4px'
-                  }}>
-                </div>
+                    backgroundSize: "8px 8px",
+                    backgroundPosition: "0 0, 4px 4px",
+                  }}
+                ></div>
               </div>
-              
+
               {/* Center Hole */}
               <div className="absolute w-16 h-16 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 border-4 border-gray-600 flex items-center justify-center z-10">
                 <div className="w-4 h-4 rounded-full bg-gray-500"></div>
               </div>
-              
+
               {/* Vinyl Reflection */}
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-transparent via-white to-transparent opacity-10 animate-rotate-3d"></div>
-              
-              {/* Record Label */}
-              <div className="absolute w-36 h-36 rounded-full bg-gradient-to-br from-gray-50 to-white flex items-center justify-center z-10 border-2 border-gray-300 shadow-inner">
-                {/* Song Title with Background */}
-                <div className="relative w-[85%] py-2 bg-white rounded-lg shadow-sm border border-gray-200">
-                  <div className="text-black text-xl font-bold text-center px-3 truncate max-w-full">
-                    {song.title}
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
           {/* Light Reflection Effect */}
           <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white to-transparent opacity-5 animate-shimmer"></div>
+        </div>
+
+        {/* Song Title below the record */}
+        <div className="text-center mt-6">
+          <h3 className="text-3xl font-bold text-light mb-2 truncate px-4">
+            {song.title}
+          </h3>
         </div>
 
         {/* Play Button Overlay */}
@@ -205,13 +211,18 @@ const SongCard: React.FC<SongCardProps> = ({ song, onPlay }) => {
             </svg>
           )}
         </button>
+      </div>
 
-        {/* Mood Badge */}
-        <div className="absolute top-4 left-4 z-20">
-          <span className="px-4 py-2 glass-dark text-light rounded-full text-sm font-semibold border border-primary-light border-opacity-50 backdrop-blur-sm shadow-lg hover:shadow-primary/30 transition-all duration-300">
-            {getMoodEmoji(song.mood)} {song.mood.charAt(0).toUpperCase() + song.mood.slice(1)}
-          </span>
-        </div>
+      {/* Mood Badge below the record */}
+      <div className="text-center mt-4">
+        <span
+          className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold shadow-lg transition-all duration-300 bg-gradient-to-r ${getMoodGradient(
+            song.mood
+          )} text-white`}
+        >
+          {getMoodEmoji(song.mood)}{" "}
+          {song.mood.charAt(0).toUpperCase() + song.mood.slice(1)}
+        </span>
       </div>
 
       {/* Audio Player */}
