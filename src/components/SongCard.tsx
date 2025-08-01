@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Song } from "@/services/songService";
 
 interface SongCardProps {
@@ -28,29 +28,32 @@ const getMoodEmoji = (mood: string): string => {
   }
 };
 
-const getMoodColor = (mood: string): string => {
+const getMoodGradient = (mood: string): string => {
   const moodLower = mood.toLowerCase();
   switch (moodLower) {
     case "happy":
-      return "bg-yellow-100 border-yellow-300 text-yellow-800";
+      return "from-yellow-400 to-orange-400";
     case "sad":
-      return "bg-blue-100 border-blue-300 text-blue-800";
+      return "from-blue-400 to-indigo-400";
     case "angry":
-      return "bg-red-100 border-red-300 text-red-800";
+      return "from-red-400 to-pink-400";
     case "neutral":
-      return "bg-gray-100 border-gray-300 text-gray-800";
+      return "from-gray-400 to-gray-300";
     case "energetic":
-      return "bg-orange-100 border-orange-300 text-orange-800";
+      return "from-orange-400 to-red-400";
     case "calm":
-      return "bg-green-100 border-green-300 text-green-800";
+      return "from-green-400 to-teal-400";
     default:
-      return "bg-purple-100 border-purple-300 text-purple-800";
+      return "from-purple-400 to-pink-400";
   }
 };
 
 const SongCard: React.FC<SongCardProps> = ({ song, onPlay }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioRef, setAudioRef] = useState<HTMLAudioElement | null>(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [progress, setProgress] = useState(0);
 
   const handlePlayPause = () => {
     if (audioRef) {
@@ -65,50 +68,89 @@ const SongCard: React.FC<SongCardProps> = ({ song, onPlay }) => {
 
   const handleAudioEnded = () => {
     setIsPlaying(false);
+    setCurrentTime(0);
+    setProgress(0);
+  };
+
+  const handleTimeUpdate = () => {
+    if (audioRef) {
+      setCurrentTime(audioRef.currentTime);
+      setProgress((audioRef.currentTime / audioRef.duration) * 100);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (audioRef) {
+      setDuration(audioRef.duration);
+    }
   };
 
   const handleAudioRef = (ref: HTMLAudioElement | null) => {
     setAudioRef(ref);
     if (ref) {
       ref.addEventListener("ended", handleAudioEnded);
+      ref.addEventListener("timeupdate", handleTimeUpdate);
+      ref.addEventListener("loadedmetadata", handleLoadedMetadata);
+    }
+  };
+
+  const formatTime = (time: number): string => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (audioRef) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const width = rect.width;
+      const clickPercent = clickX / width;
+      const newTime = clickPercent * audioRef.duration;
+      audioRef.currentTime = newTime;
     }
   };
 
   return (
-    <div className="card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-      {/* Thumbnail Section */}
-      <div className="relative h-56 bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 rounded-t-2xl overflow-hidden">
-        <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
-          <div className="text-white text-center">
-            <div className="text-7xl mb-3 animate-float">
+    <div className="music-player-card p-6 animate-fade-in-up shadow-lg shadow-primary/20 border-t-2 border-primary-light/30">
+      {/* Album Cover Section */}
+      <div className="relative mb-6">
+        <div className="album-cover w-full h-64 flex items-center justify-center relative overflow-hidden neumorphic">
+          <div
+            className={`absolute inset-0 ${song.mood ? `mood-${song.mood}` : 'bg-gradient-to-br from-primary to-primary-dark'} opacity-90`}
+          ></div>
+          <div className="relative z-10 text-center">
+            <div className="text-8xl mb-4 animate-float">
               {getMoodEmoji(song.mood)}
             </div>
-            <div className="text-lg font-semibold opacity-90 text-shadow">
-              Mood Music
+            <div className="text-light text-xl font-bold text-shadow-lg">
+              {song.title}
             </div>
           </div>
+
+          {/* 3D Effect Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black opacity-20 animate-shimmer"></div>
         </div>
 
         {/* Play Button Overlay */}
         <button
           onClick={handlePlayPause}
-          className="absolute top-4 right-4 w-14 h-14 bg-white bg-opacity-95 rounded-full flex items-center justify-center hover:bg-opacity-100 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110"
+          className="absolute top-4 right-4 w-16 h-16 bg-primary bg-opacity-95 rounded-full flex items-center justify-center hover:bg-opacity-100 transition-all duration-300 shadow-lg hover:shadow-primary/50 transform hover:scale-110 backdrop-blur-sm border border-primary-light/50"
         >
           {isPlaying ? (
             <svg
-              className="w-6 h-6 text-gray-700"
+              className="w-8 h-8 text-light"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
               <path
                 fillRule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
-                clipRule="evenodd"
-              />
+              ></path>
             </svg>
           ) : (
             <svg
-              className="w-6 h-6 text-gray-700 ml-1"
+              className="w-8 h-8 text-light"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -120,77 +162,79 @@ const SongCard: React.FC<SongCardProps> = ({ song, onPlay }) => {
             </svg>
           )}
         </button>
-      </div>
 
-      {/* Content Section */}
-      <div className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <h3 className="text-xl font-bold text-gray-800 truncate flex-1 mr-3 font-display">
-            {song.title}
-          </h3>
-          <span
-            className={`px-4 py-2 rounded-full text-sm font-semibold border ${getMoodColor(
-              song.mood
-            )}`}
-          >
-            {getMoodEmoji(song.mood)} {song.mood}
+        {/* Mood Badge */}
+        <div className="absolute top-4 left-4">
+          <span className="px-4 py-2 glass text-light rounded-full text-sm font-semibold border border-primary-light border-opacity-30 backdrop-blur-sm shadow-md">
+            {getMoodEmoji(song.mood)} {song.mood.charAt(0).toUpperCase() + song.mood.slice(1)}
           </span>
         </div>
+      </div>
 
-        {/* Audio Player */}
-        <div className="space-y-4">
-          <audio
-            ref={handleAudioRef}
-            src={song.url}
-            preload="metadata"
-            className="w-full"
-          />
+      {/* Audio Player */}
+      <div className="space-y-4">
+        <audio
+          ref={handleAudioRef}
+          src={song.url}
+          preload="metadata"
+          className="hidden"
+        />
 
-          {/* Custom Audio Controls */}
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={handlePlayPause}
-              className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full flex items-center justify-center hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+        {/* Progress Bar */}
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm text-light opacity-80">
+            <span className="font-mono">{formatTime(currentTime)}</span>
+            <span className="font-mono">{formatTime(duration)}</span>
+          </div>
+
+          <div
+            className="progress-bar h-3 cursor-pointer bg-gray-700 rounded-full"
+            onClick={handleProgressClick}
+          >
+            <div
+              className="progress-fill h-full rounded-full"
+              style={{ width: `${progress}%` }}
             >
-              {isPlaying ? (
-                <svg
-                  className="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="w-5 h-5 ml-0.5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              )}
-            </button>
-
-            <div className="flex-1">
-              <div className="text-sm text-gray-600 mb-2 font-medium">
-                {isPlaying ? "Now Playing" : "Click to play"}
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-3">
-                <div
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-300"
-                  style={{ width: isPlaying ? "100%" : "0%" }}
-                ></div>
-              </div>
+              <div className="progress-handle w-4 h-4 absolute right-0 top-1/2 transform -translate-y-1/2 -translate-x-1/2 border border-primary-light/50 shadow-primary/30 shadow-md"></div>
             </div>
           </div>
+        </div>
+
+        {/* Control Buttons */}
+        <div className="flex items-center justify-center space-x-6">
+          <button
+            onClick={handlePlayPause}
+            className="w-14 h-14 bg-gradient-to-r from-primary to-primary-dark text-light rounded-full flex items-center justify-center hover:from-primary-light hover:to-primary transition-all duration-300 shadow-lg hover:shadow-primary/50 transform hover:scale-110 neumorphic-inset"
+          >
+            {isPlaying ? (
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            ) : (
+              <svg
+                className="w-6 h-6 ml-1"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
+
+        {/* Status Text */}
+        <div className="text-center">
+          <p className="glass inline-block px-4 py-1 rounded-full text-sm font-medium shadow-md border border-primary-light/30">
+            {isPlaying ? "Now Playing" : "Click to play"}
+          </p>
         </div>
       </div>
     </div>

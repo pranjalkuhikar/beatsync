@@ -79,26 +79,26 @@ const BeatSync: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-dark via-primary-dark to-primary p-4 font-sans">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold text-white mb-6 text-shadow-lg font-display animate-float">
-            🎵 BeatSync 🎭
+        <div className="text-center mb-16 animate-fade-in-up">
+          <h1 className="text-7xl font-bold text-light mb-8 text-shadow-lg font-display animate-float">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light">🎵 BeatSync 🎭</span>
           </h1>
-          <p className="text-2xl text-white text-shadow font-medium opacity-90">
+          <p className="text-3xl text-light text-shadow font-medium opacity-90 mb-6">
             Your face, your mood, your perfect music
           </p>
-          <div className="mt-4 w-24 h-1 bg-white mx-auto rounded-full animate-pulse-glow"></div>
+          <div className="w-32 h-1 bg-gradient-to-r from-primary-light to-secondary-light mx-auto rounded-full animate-pulse-glow"></div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           {/* Left Column - Face Detection */}
-          <div className="space-y-6">
-            <div className="card p-8">
-              <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center font-display">
-                <span className="mr-4 text-4xl">📷</span>
-                Face Detection
+          <div className="space-y-8 animate-slide-in">
+            <div className="card-dark p-8 border-l-4 border-primary">
+              <h2 className="text-4xl font-bold text-light mb-8 flex items-center font-display">
+                <span className="mr-6 text-5xl animate-float">📷</span>
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-light">Face Detection</span>
               </h2>
               <FaceDetection
                 onExpressionDetected={handleExpressionDetected}
@@ -106,16 +106,16 @@ const BeatSync: React.FC = () => {
               />
 
               {/* Detection Button */}
-              <div className="mt-8 text-center">
+              <div className="mt-10 text-center">
                 <button
                   onClick={handleDetectClick}
                   disabled={isDetecting}
-                  className="btn-primary text-lg px-10 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary text-xl px-12 py-5 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-primary/50 transition-all duration-300"
                 >
                   {isDetecting ? (
                     <span className="flex items-center justify-center">
                       <svg
-                        className="animate-spin -ml-1 mr-3 h-6 w-6 text-white"
+                        className="animate-spin -ml-1 mr-3 h-6 w-6 text-gray-800"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -145,11 +145,14 @@ const BeatSync: React.FC = () => {
           </div>
 
           {/* Right Column - Mood Indicator */}
-          <div className="space-y-6">
-            <div className="card p-8">
-              <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center font-display">
-                <span className="mr-4 text-4xl">🎭</span>
-                Mood Analysis
+          <div
+            className="space-y-8 animate-slide-in"
+            style={{ animationDelay: "0.2s" }}
+          >
+            <div className="card-dark p-8 border-l-4 border-secondary">
+              <h2 className="text-4xl font-bold text-light mb-8 flex items-center font-display">
+                <span className="mr-6 text-5xl animate-float">🎭</span>
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-secondary-light to-light">Mood Analysis</span>
               </h2>
               <MoodIndicator
                 expression={expression}
@@ -161,17 +164,20 @@ const BeatSync: React.FC = () => {
         </div>
 
         {/* Song Suggestions Section */}
-        <div className="card p-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 flex items-center font-display">
-            <span className="mr-4 text-4xl">🎵</span>
-            Suggested Songs
+        <div
+          className="card-dark p-8 animate-fade-in-up border-t-4 border-primary-light rounded-b-3xl"
+          style={{ animationDelay: "0.4s" }}
+        >
+          <h2 className="text-4xl font-bold text-light mb-10 flex items-center font-display">
+            <span className="mr-6 text-5xl animate-float">🎵</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light via-secondary-light to-light">Suggested Songs</span>
           </h2>
 
           {isLoading && (
-            <div className="text-center py-16">
-              <div className="animate-spin w-16 h-16 mx-auto mb-6">
+            <div className="text-center py-20">
+              <div className="animate-spin w-20 h-20 mx-auto mb-8">
                 <svg
-                  className="w-full h-full text-purple-600"
+                  className="w-full h-full text-primary-light"
                   fill="none"
                   viewBox="0 0 24 24"
                 >
@@ -190,7 +196,7 @@ const BeatSync: React.FC = () => {
                   ></path>
                 </svg>
               </div>
-              <p className="text-xl text-gray-700 font-medium">
+              <p className="text-2xl text-light font-medium bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light inline-block">
                 Finding perfect songs for your mood...
               </p>
             </div>
@@ -198,8 +204,14 @@ const BeatSync: React.FC = () => {
 
           {!isLoading && suggestedSongs.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {suggestedSongs.map((song) => (
-                <SongCard key={song.id} song={song} />
+              {suggestedSongs.map((song, index) => (
+                <div
+                  key={song.id}
+                  className="animate-fade-in-up"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <SongCard song={song} />
+                </div>
               ))}
             </div>
           )}
@@ -209,24 +221,24 @@ const BeatSync: React.FC = () => {
             expression &&
             expression !== "No face detected" &&
             expression !== "Detection failed" && (
-              <div className="text-center py-16">
-                <div className="text-8xl mb-6">🎵</div>
-                <h3 className="text-2xl font-semibold text-gray-700 mb-4 font-display">
+              <div className="text-center py-20">
+                <div className="text-9xl mb-8 animate-float">🎧</div>
+                <h3 className="text-3xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light inline-block mb-6 font-display">
                   No songs found for this mood
                 </h3>
-                <p className="text-gray-600 text-lg">
+                <p className="text-xl text-gray-400 mt-4 glass p-4 inline-block rounded-xl">
                   Try adding some songs to your library first!
                 </p>
               </div>
             )}
 
           {!expression && !isDetecting && (
-            <div className="text-center py-16">
-              <div className="text-8xl mb-6 animate-float">🎭</div>
-              <h3 className="text-2xl font-semibold text-gray-700 mb-4 font-display">
+            <div className="text-center py-20">
+              <div className="text-9xl mb-8 animate-float">🎭</div>
+              <h3 className="text-3xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light inline-block mb-6 font-display">
                 Ready to discover your mood music?
               </h3>
-              <p className="text-gray-600 text-lg">
+              <p className="text-xl glass p-4 inline-block rounded-xl">
                 Click the detect button to get started!
               </p>
             </div>
@@ -234,9 +246,9 @@ const BeatSync: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-12">
-          <div className="glass-dark rounded-full px-8 py-4 inline-block">
-            <p className="text-white font-medium text-shadow">
+        <div className="text-center mt-16">
+          <div className="glass-dark rounded-full px-10 py-6 inline-block border border-primary-light shadow-lg shadow-primary/20">
+            <p className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light font-semibold text-lg">
               Powered by AI Face Detection & Mood Analysis
             </p>
           </div>

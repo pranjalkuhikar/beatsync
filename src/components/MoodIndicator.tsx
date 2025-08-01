@@ -147,16 +147,16 @@ const MoodIndicator: React.FC<MoodIndicatorProps> = ({
             <span>Confidence</span>
             <span>{confidencePercentage}%</span>
           </div>
-          <div className="w-full bg-white bg-opacity-30 rounded-full h-4">
+          <div className="w-full bg-gray-700 bg-opacity-50 rounded-full h-4">
             <div
-              className="bg-white h-4 rounded-full transition-all duration-1000 ease-out shadow-lg"
+              className="bg-gradient-to-r from-primary to-secondary h-4 rounded-full transition-all duration-1000 ease-out shadow-lg"
               style={{ width: `${confidencePercentage}%` }}
             ></div>
           </div>
         </div>
 
         {/* Mood Description */}
-        <div className="bg-white bg-opacity-20 rounded-xl p-4 backdrop-blur-sm">
+        <div className="glass rounded-xl p-4 shadow-lg border border-primary-light/30">
           <p className="text-white text-base font-medium">
             {expression === "happy" &&
               "You're radiating positivity! Perfect for upbeat music."}
